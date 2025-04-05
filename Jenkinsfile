@@ -31,27 +31,28 @@ pipeline {
         }
 
         stage('Build') {
-                steps {
-                    dir('my-react-app') { // Replace with your actual React app folder
-                        bat 'npm install'
-                        bat 'npm run build'
-                    }
-                }
-            }
-
-        stage('Deploy') {
             steps {
-                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
-                    bat "az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID"
-                    dir('my-react-app/build') {
-                            bat 'powershell Compress-Archive -Path * -DestinationPath ../../publish.zip -Force'
-                        }
-
-                    bat "az webapp deploy --resource-group $RESOURCE_GROUP --name $APP_SERVICE_NAME --src-path ./publish.zip --type zip"
+                dir('my-react-app') {
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
 
+        stage('Deploy') {
+            steps {
+                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
+                    bat "az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%"
+                    dir('my-react-app/build') {
+                        bat 'powershell Compress-Archive -Path * -DestinationPath ../../publish.zip -Force'
+                        // Optional: Verify zip contents
+                        bat 'powershell Expand-Archive -Path ../../publish.zip -DestinationPath ../../zip_contents -Force'
+                        bat 'dir ../../zip_contents'
+                    }
+                    bat "az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path ./publish.zip --type zip --verbose"
+                }
+            }
+        }
     }
 
     post {
