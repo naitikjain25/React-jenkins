@@ -46,6 +46,4 @@ pipeline {
                     dir('my-react-app/build') {
                         bat 'powershell Compress-Archive -Path * -DestinationPath ../../publish.zip -Force'
                         bat 'powershell Expand-Archive -Path ../../publish.zip -DestinationPath ../../zip_contents -Force'
-                        bat 'dir C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\react-jenkins\\zip_contents'
-                    }
-                    bat "az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path ./
+                        bat 'dir C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\react
