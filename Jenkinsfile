@@ -9,18 +9,35 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/naitikjain25/AzureAssignment1.git'
+                git branch: 'main', url: 'https://github.com/naitikjain25/webapi.git'
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('jenkins_assignment3') {
+                    bat 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Plan & Apply') {
+            steps {
+                dir('jenkins_assignment3') {
+                    bat 'terraform plan -out=tfplan'
+                    bat 'terraform apply -auto-approve tfplan'
+                }
             }
         }
 
         stage('Build') {
-            steps {
-                dir('my-react-app') { // Replace with your actual React app folder
-                    bat 'npm install'
-                    bat 'npm run build'
+                steps {
+                    dir('my-react-app') { // Replace with your actual React app folder
+                        bat 'npm install'
+                        bat 'npm run build'
+                    }
                 }
             }
-        }
 
         stage('Deploy') {
             steps {
@@ -31,6 +48,7 @@ pipeline {
                 }
             }
         }
+
     }
 
     post {
