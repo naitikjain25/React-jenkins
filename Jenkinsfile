@@ -45,22 +45,7 @@ pipeline {
                     bat "az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%"
                     dir('my-react-app/build') {
                         bat 'powershell Compress-Archive -Path * -DestinationPath ../../publish.zip -Force'
-                        // Optional: Verify zip contents
                         bat 'powershell Expand-Archive -Path ../../publish.zip -DestinationPath ../../zip_contents -Force'
-                        bat 'dir ../../zip_contents'
+                        bat 'dir C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\react-jenkins\\zip_contents'
                     }
-                    bat "az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path ./publish.zip --type zip --verbose"
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Deployment Successful!'
-        }
-        failure {
-            echo 'Deployment Failed!'
-        }
-    }
-}
+                    bat "az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path ./
