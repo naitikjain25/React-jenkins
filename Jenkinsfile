@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/naitikjain25/webapi.git'
+                git branch: 'main', url: 'https://github.com/naitikjain25/React-jenkins.git'
             }
         }
 
