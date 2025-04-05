@@ -15,9 +15,10 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'dotnet restore'
-                bat 'dotnet build --configuration Release'
-                bat 'dotnet publish -c Release -o ./publish'
+                dir('my-react-app') { // Replace with your actual React app folder
+                    bat 'npm install'
+                    bat 'npm run build'
+                }
             }
         }
 
