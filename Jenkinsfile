@@ -15,7 +15,7 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                dir('jenkins_assignment3') {
+                dir('terraform') {
                     bat 'terraform init'
                 }
             }
@@ -23,7 +23,7 @@ pipeline {
 
         stage('Terraform Plan & Apply') {
             steps {
-                dir('jenkins_assignment3') {
+                dir('terraform') {
                     bat 'terraform plan -out=tfplan'
                     bat 'terraform apply -auto-approve tfplan'
                 }
