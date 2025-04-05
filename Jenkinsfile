@@ -43,7 +43,10 @@ pipeline {
             steps {
                 withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
                     bat "az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID"
-                    bat 'powershell Compress-Archive -Path "React-jenkins/build/*" -DestinationPath "publish.zip" -Force'
+                    dir('my-react-app/build') {
+                            bat 'powershell Compress-Archive -Path * -DestinationPath ../../publish.zip -Force'
+                        }
+
                     bat "az webapp deploy --resource-group $RESOURCE_GROUP --name $APP_SERVICE_NAME --src-path ./publish.zip --type zip"
                 }
             }
