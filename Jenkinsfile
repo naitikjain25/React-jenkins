@@ -42,21 +42,13 @@ pipeline {
                 stage('Deploy') {
             steps {
                 withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
-                    bat "az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%"
-                    
-                    dir('my-react-app/build') {
-                        bat 'powershell Compress-Archive -Path * -DestinationPath ../../publish.zip -Force'
-                    }
-
-                    bat 'powershell Expand-Archive -Path publish.zip -DestinationPath zip_contents -Force'
-                    bat 'dir zip_contents' // Optional: view contents for debugging
-
-                    bat "az webapp deploy --resource-group %RESOURCE_GROUP% --name %APP_SERVICE_NAME% --src-path publish.zip --type zip --verbose"
-
-                    bat "az logout"
+                    bat "az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID"
+                    bat "powershell Compress-Archive -Path ./publish/* -DestinationPath ./publish.zip -Force"
+                    bat "az webapp deploy --resource-group $RESOURCE_GROUP --name $APP_SERVICE_NAME --src-path ./publish.zip --type zip"
                 }
             }
         }
+
 
     }
 
